@@ -126,6 +126,22 @@ number of steps inside that interval is `r average.Max$steps`.
 
 ## Imputing missing values
 
+The total number of missing values in the dataset (i.e. the total number of rows with NAs).
+Filter NA rows and count the number of observations in the current group with n().
+Fix the column name in resulting frame.
+
+```{r nas_values echo=TRUE}
+
+nas.cnt <- activity  %>%
+  filter(is.na(steps)) %>%
+  summarise(n()) %>%
+  rename(n = `n()`)
+nas.cnt$n
+```
+
+There are `r nas.cnt$n` NA values in the set.
+
+
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
