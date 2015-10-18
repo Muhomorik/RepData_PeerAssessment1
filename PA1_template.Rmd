@@ -90,6 +90,17 @@ average.byInterval <- activity %>%
     steps = mean(steps))
 ```
 
+Plot the results as time series.
+
+```{r DailyAverage_chart echo=TRUE}
+plot(average.byInterval$interval, average.byInterval$step,
+  type="l",
+  main="Average number of steps per interval",
+  xlab="Interval", 
+  ylab="Steps mean"
+)
+
+```
 
 ## Imputing missing values
 
