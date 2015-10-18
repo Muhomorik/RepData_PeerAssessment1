@@ -197,6 +197,38 @@ Char shows that data distribution is around the center.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+Add new column *day* with Weekday as a decimal number (1-7, Monday is 1). Then
+replace day nubmers >6 with *weekend* and other days with *weekday*. Filled NA values
+are used.
+
+```{r days_mod echo=TRUE}
+
+activityFilled_days <- activity.filled  %>%
+  mutate(day = strftime(date,'%u')) %>%
+  mutate(day = ifelse(day > 6, "weekend", "weekday")) %>%
+  select(steps, interval, day) %>%
+  group_by(interval, day) %>%
+  summarise(steps = mean(steps))
+
+```
+
+Plot data using ggplot2 with horizontal facets.
+
+```{r days_chart echo=TRUE}
+
+days.plot <-
+  ggplot(activityFilled_days, aes(interval, steps, fill=steps)) +
+  geom_freqpoly(stat="identity") + 
+  theme_bw() + # White background with grid lines.
+  guides( fill=FALSE ) + # skip legend.
+  facet_grid(day~., scales = "free", space="free") +
+  labs(x = "interval", y = "Average nr of steps") + 
+  labs(title = "Average number of steps taken weekday/weekend") +
+  theme(text = element_text(size=12)) # Smaller font or will overlap in file.
+
+print(days.plot) # screen, Plots tab.
+
+```
 
 
 [1]: https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
