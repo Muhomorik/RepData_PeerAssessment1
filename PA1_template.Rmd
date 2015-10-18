@@ -48,7 +48,7 @@ activity <- read.csv(file.data) %>%
 Before creating a histogramm remove NA values and group dataframe by date. Apply
 the sum() function to $steps.
 
-```{r part1_calc echo=TRUE}
+```{r MeanMedPerDay_calc echo=TRUE}
 summ.byDate <- activity %>%
   na.omit() %>% # 15264 left
   group_by(date) %>%
@@ -59,7 +59,7 @@ summ.byDate <- activity %>%
 
 Draw a histogram for steps.
 
-```{r part1_hist echo=TRUE}
+```{r MeanMedPerDay_hist echo=TRUE}
 hist(summ.byDate$steps,
      col = "aquamarine3",
      main="Steps per day",
@@ -69,7 +69,7 @@ hist(summ.byDate$steps,
 
 Calculate the mean and median for values.
 
-```{r part1_MeanMed echo=TRUE}
+```{r MeanMedPerDay_MeanMed echo=TRUE}
 steps.mean <- mean(summ.byDate$steps)
 steps.median <- median(summ.byDate$steps)
 ```
