@@ -11,8 +11,11 @@ output:
 The research data set zip file should be in the current working directory or it will be downloaded and unzipped to the current working directory from the [webpage][1].
 
 Remember to set the working directory.
+Printed values are rouned to two decimals.
 
 ```{r setoptions, echo=TRUE}
+# Disable scientific notation.
+options(scipen=999)
 
 setwd("~/R Projects/Coursera/5 - Reproducible Research/RepData_PeerAssessment1")
 rm(list=ls())
@@ -20,7 +23,9 @@ rm(list=ls())
 # Load packages
 library(dplyr)
 library(ggplot2)
+```
 
+```{r load}
 # Download uri.
 data.url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 data.url <- gsub("%2F", "/", data.url)
@@ -79,8 +84,8 @@ steps.median <- median(summ.byDate$steps)
 
 ```
 
-The *mean* total number of steps taken per day is `r steps.mean` and the 
-*median* is `r steps.median`.
+The *mean* total number of steps taken per day is `r round(steps.mean, digits = 2)` and the 
+*median* is `r round(steps.median, digits = 2)`.
 
 ## What is the average daily activity pattern?
 
@@ -127,8 +132,10 @@ average.Max$steps
 
 ```
 
-The interval with the maximum amount of steps is `r average.Max$interval` and the average 
-number of steps inside that interval is `r average.Max$steps`.
+The interval with the maximum amount of steps is 
+`r round(average.Max$interval, digits = 2)` 
+and the average number of steps inside that interval is 
+`r round(average.Max$steps, digits = 2)`.
 
 ## Imputing missing values
 
@@ -155,13 +162,16 @@ The strategy uses already calculated values inside the frame is
 to replace the missing values by the mean value from the given interval, like
 inside the *average.byInterval* data frame..
 
-Note: If-else syntax is different for dplyr, *ifelse(test, yes, no)*.
+Note: replace is a faster alternative for ifelse syntax is different for dplyr, *replace(x, list, values)*.
+New data set now looks like:
 
 ```{r nas_fill}
 
 activity.filled <- activity  %>%
   group_by(interval) %>%
   mutate(steps = replace(steps, is.na(steps), mean(steps, na.rm=TRUE)))
+
+head(activity.filled)
 
 ```
 
@@ -196,8 +206,12 @@ stepsFilled.median <- median(summ.byDateFilled$steps)
 
 ```
 
-The *mean* total number of steps taken per day has changed form `r steps.mean` to  
-`r stepsFilled.mean` and the *median* is changed from `r steps.median` to `r stepsFilled.median`.
+The *mean* total number of steps taken per day has changed form 
+`r round(steps.mean, digits = 4)` to 
+`r round(stepsFilled.mean, digits = 4)` 
+and the *median* is changed from 
+`r round(steps.median, digits = 4)` to 
+`r round(stepsFilled.median, digits = 4)`.
 Basically, the median of data is changed but mean remain the same.
 Char shows that data distribution is around the center.
 
@@ -206,7 +220,7 @@ Char shows that data distribution is around the center.
 
 Add new column *day* with Weekday as a decimal number (1-7, Monday is 1). Then
 replace day numbers >6 with *weekend* and other days with *weekday*. Filled NA values
-are used.
+are used. Data is now:
 
 ```{r days_mod}
 
@@ -217,9 +231,11 @@ activityFilled_days <- activity.filled  %>%
   group_by(interval, day) %>%
   summarise(steps = mean(steps))
 
+head(activityFilled_days)
+
 ```
 
-Plot data using ggplot2 with horizontal facets. Because tick are basically the time.
+Plot data using ggplot2 with horizontal facets. Because ticks are basically the time.
 2355 = 23:55) manual X-axis scale is used with a major tick of 200 (2 hours). The 
 minor tick is automatically set to 1H.
 
