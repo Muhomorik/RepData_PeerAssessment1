@@ -142,6 +142,21 @@ nas.cnt$n
 There are `r nas.cnt$n` NA values in the set.
 
 
+### Filling minning values ###
+
+The strategy uses already calculated values inside the frame is 
+to replace the missing values by the mean value from the given interval, like
+inside the *average.byInterval* data frame..
+
+Note: If-else syntax is different for dplyr, *ifelse(test, yes, no)*.
+
+```{r nas_fill echo=TRUE}
+
+activity.filled <- activity  %>%
+  group_by(interval) %>%
+  mutate(steps = replace(steps, is.na(steps), mean(steps, na.rm=TRUE)))
+
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
