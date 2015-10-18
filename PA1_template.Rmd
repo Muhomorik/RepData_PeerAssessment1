@@ -158,6 +158,42 @@ activity.filled <- activity  %>%
 
 ```
 
+New sum of steps calculated with NA values replaced by mean.
+
+```{r nas_MeanMedPerDay_calc echo=TRUE}
+
+summ.byDateFilled <- activity.filled %>%
+  group_by(date) %>%
+  summarise(
+    steps = sum(steps))
+
+```
+
+Draw a histogram for steps with new NA's.
+
+```{r nas_MeanMedPerDay_hist echo=TRUE}
+
+hist(summ.byDateFilled$steps,
+     col = "aquamarine3",
+     main="Steps per day, NA filled",
+     xlab="Steps")
+
+```
+
+Calculate the mean and median for values.
+
+```{r nas_MeanMedPerDay_MeanMed echo=TRUE}
+
+stepsFilled.mean <- mean(summ.byDateFilled$steps)
+stepsFilled.median <- median(summ.byDateFilled$steps)
+
+```
+
+The *mean* total number of steps taken per day has changed form `r steps.mean` to  
+`r stepsFilled.mean` and the *median* is changed from `r steps.median` to `r stepsFilled.median`.
+Basically, the median of data is changed but mean remain the same.
+Char shows that data distribution is around the center.
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
