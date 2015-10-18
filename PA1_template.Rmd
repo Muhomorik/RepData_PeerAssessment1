@@ -93,6 +93,7 @@ average.byInterval <- activity %>%
 Plot the results as time series.
 
 ```{r DailyAverage_chart echo=TRUE}
+
 plot(average.byInterval$interval, average.byInterval$step,
   type="l",
   main="Average number of steps per interval",
@@ -101,6 +102,27 @@ plot(average.byInterval$interval, average.byInterval$step,
 )
 
 ```
+
+
+Find interval which contains the maximum of steps. The result is a frame of
+interval and steps. Because there can be multiple rows with results (max value is
+in more than one interval) and the conflict resolving strategy is not specified 
+only the first result is taken.
+
+
+```{r DailyAverage_values echo=TRUE}
+
+average.Max <- average.byInterval  %>%
+  filter(steps == max(steps)) %>%
+  filter(row_number() == 1)
+
+average.Max$interval
+average.Max$steps
+
+```
+
+The interval with the maximum ammount of steps is `r average.Max$interval` and the average 
+number of steps inside that interval is `r average.Max$steps`.
 
 ## Imputing missing values
 
