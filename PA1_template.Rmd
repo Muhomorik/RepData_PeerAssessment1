@@ -8,7 +8,38 @@ output:
 
 ## Loading and preprocessing the data
 
+The research dataset zip file should be in the current working directory or it will be downloaded and unzipped to the current working directory from the [webpage][1].
 
+
+```{r load echo=TRUE}
+
+rm(list=ls())
+
+# Load packages
+library(dplyr)
+library(ggplot2)
+
+# Download uri.
+data.url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+data.url <- gsub("%2F", "/", fileUrl)
+
+file.zip <- "activity.zip"
+file.data <- "activity.csv"
+
+# Download file if missing.
+if (!file.exists(file.zip)){
+  message("Downloading file into: ", getwd())
+  download.file(data.url, file.zip, method = "auto", mode="wb") # Don't use curl on Windows.
+  unzip(file.zip)
+}
+
+# Load into df and set correct column types.
+activity <- read.csv(file.data) %>%
+  mutate(date = as.Date(date)) %>%
+  mutate(steps = as.integer(steps)) %>%
+  mutate(interval = as.integer(interval))
+
+```
 
 ## What is mean total number of steps taken per day?
 
@@ -23,3 +54,7 @@ output:
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+
+[1]: https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
