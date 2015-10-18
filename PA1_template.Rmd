@@ -13,6 +13,7 @@ The research dataset zip file should be in the current working directory or it w
 
 ```{r load echo=TRUE}
 
+setwd("~/R Projects/Coursera/5 - Reproducible Research/RepData_PeerAssessment1")
 rm(list=ls())
 
 # Load packages
@@ -21,7 +22,7 @@ library(ggplot2)
 
 # Download uri.
 data.url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
-data.url <- gsub("%2F", "/", fileUrl)
+data.url <- gsub("%2F", "/", data.url)
 
 file.zip <- "activity.zip"
 file.data <- "activity.csv"
@@ -33,17 +34,48 @@ if (!file.exists(file.zip)){
   unzip(file.zip)
 }
 
-# Load into df and set correct column types.
+# Load into df and set correct column types. Remove NA's.
 activity <- read.csv(file.data) %>%
   mutate(date = as.Date(date)) %>%
   mutate(steps = as.integer(steps)) %>%
   mutate(interval = as.integer(interval))
 
+
 ```
 
 ## What is mean total number of steps taken per day?
 
+Before creating a histogramm remove NA values and group dataframe by date. Apply
+the sum() function to $steps.
 
+```{r part1_calc echo=TRUE}
+summ.byDate <- activity %>%
+  na.omit() %>% # 15264 left
+  group_by(date) %>%
+  summarise(
+    steps = sum(steps))
+
+```
+
+Draw a histogram for steps.
+
+```{r part1_hist echo=TRUE}
+hist(summ.byDate$steps,
+     col = "aquamarine3",
+     main="Steps per day",
+     xlab="Steps")
+
+```
+
+Calculate the mean and median for values.
+
+```{r part1_MeanMed echo=TRUE}
+steps.mean <- mean(summ.byDate$steps)
+steps.median <- median(summ.byDate$steps)
+```
+
+The *mean* total number of steps taken per day is `r steps.mean` and the 
+*median* is `r steps.median`.
 
 ## What is the average daily activity pattern?
 
