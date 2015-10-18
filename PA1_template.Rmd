@@ -10,6 +10,7 @@ output:
 
 The research dataset zip file should be in the current working directory or it will be downloaded and unzipped to the current working directory from the [webpage][1].
 
+Remember to set the working directory.
 
 ```{r load echo=TRUE}
 
@@ -79,6 +80,15 @@ The *mean* total number of steps taken per day is `r steps.mean` and the
 
 ## What is the average daily activity pattern?
 
+Remove NA's and calculate the mean of steps over all days by time interval.
+
+```{r DailyAverage_calc echo=TRUE}
+average.byInterval <- activity %>%
+  na.omit() %>% # 15264 left
+  group_by(interval) %>%
+  summarise(
+    steps = mean(steps))
+```
 
 
 ## Imputing missing values
