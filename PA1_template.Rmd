@@ -8,11 +8,11 @@ output:
 
 ## Loading and preprocessing the data
 
-The research dataset zip file should be in the current working directory or it will be downloaded and unzipped to the current working directory from the [webpage][1].
+The research data set zip file should be in the current working directory or it will be downloaded and unzipped to the current working directory from the [webpage][1].
 
 Remember to set the working directory.
 
-```{r load echo=TRUE}
+```{r setoptions, echo=TRUE}
 
 setwd("~/R Projects/Coursera/5 - Reproducible Research/RepData_PeerAssessment1")
 rm(list=ls())
@@ -46,10 +46,11 @@ activity <- read.csv(file.data) %>%
 
 ## What is mean total number of steps taken per day?
 
-Before creating a histogramm remove NA values and group dataframe by date. Apply
+Before creating a histogram remove NA values and group data frame by date. Apply
 the sum() function to $steps.
 
-```{r MeanMedPerDay_calc echo=TRUE}
+```{r MeanMedPerDay_calc}
+
 summ.byDate <- activity %>%
   na.omit() %>% # 15264 left
   group_by(date) %>%
@@ -60,7 +61,8 @@ summ.byDate <- activity %>%
 
 Draw a histogram for steps.
 
-```{r MeanMedPerDay_hist echo=TRUE}
+```{r MeanMedPerDay_hist}
+
 hist(summ.byDate$steps,
      col = "aquamarine3",
      main="Steps per day",
@@ -70,9 +72,11 @@ hist(summ.byDate$steps,
 
 Calculate the mean and median for values.
 
-```{r MeanMedPerDay_MeanMed echo=TRUE}
+```{r MeanMedPerDay_MeanMed}
+
 steps.mean <- mean(summ.byDate$steps)
 steps.median <- median(summ.byDate$steps)
+
 ```
 
 The *mean* total number of steps taken per day is `r steps.mean` and the 
@@ -82,17 +86,19 @@ The *mean* total number of steps taken per day is `r steps.mean` and the
 
 Remove NA's and calculate the mean of steps over all days by time interval.
 
-```{r DailyAverage_calc echo=TRUE}
+```{r DailyAverage_calc}
+
 average.byInterval <- activity %>%
   na.omit() %>% # 15264 left
   group_by(interval) %>%
   summarise(
     steps = mean(steps))
+
 ```
 
 Plot the results as time series.
 
-```{r DailyAverage_chart echo=TRUE}
+```{r DailyAverage_chart}
 
 plot(average.byInterval$interval, average.byInterval$step,
   type="l",
@@ -110,7 +116,7 @@ in more than one interval) and the conflict resolving strategy is not specified
 only the first result is taken.
 
 
-```{r DailyAverage_values echo=TRUE}
+```{r DailyAverage_values}
 
 average.Max <- average.byInterval  %>%
   filter(steps == max(steps)) %>%
@@ -121,22 +127,23 @@ average.Max$steps
 
 ```
 
-The interval with the maximum ammount of steps is `r average.Max$interval` and the average 
+The interval with the maximum amount of steps is `r average.Max$interval` and the average 
 number of steps inside that interval is `r average.Max$steps`.
 
 ## Imputing missing values
 
-The total number of missing values in the dataset (i.e. the total number of rows with NAs).
+The total number of missing values in the data set (i.e. the total number of rows with NAs).
 Filter NA rows and count the number of observations in the current group with n().
 Fix the column name in resulting frame.
 
-```{r nas_values echo=TRUE}
+```{r nas_values}
 
 nas.cnt <- activity  %>%
   filter(is.na(steps)) %>%
   summarise(n()) %>%
   rename(n = `n()`)
 nas.cnt$n
+
 ```
 
 There are `r nas.cnt$n` NA values in the set.
@@ -150,7 +157,7 @@ inside the *average.byInterval* data frame..
 
 Note: If-else syntax is different for dplyr, *ifelse(test, yes, no)*.
 
-```{r nas_fill echo=TRUE}
+```{r nas_fill}
 
 activity.filled <- activity  %>%
   group_by(interval) %>%
@@ -160,7 +167,7 @@ activity.filled <- activity  %>%
 
 New sum of steps calculated with NA values replaced by mean.
 
-```{r nas_MeanMedPerDay_calc echo=TRUE}
+```{r nas_MeanMedPerDay_calc}
 
 summ.byDateFilled <- activity.filled %>%
   group_by(date) %>%
@@ -171,7 +178,7 @@ summ.byDateFilled <- activity.filled %>%
 
 Draw a histogram for steps with new NA's.
 
-```{r nas_MeanMedPerDay_hist echo=TRUE}
+```{r nas_MeanMedPerDay_hist}
 
 hist(summ.byDateFilled$steps,
      col = "aquamarine3",
@@ -182,7 +189,7 @@ hist(summ.byDateFilled$steps,
 
 Calculate the mean and median for values.
 
-```{r nas_MeanMedPerDay_MeanMed echo=TRUE}
+```{r nas_MeanMedPerDay_MeanMed}
 
 stepsFilled.mean <- mean(summ.byDateFilled$steps)
 stepsFilled.median <- median(summ.byDateFilled$steps)
@@ -198,10 +205,10 @@ Char shows that data distribution is around the center.
 ## Are there differences in activity patterns between weekdays and weekends?
 
 Add new column *day* with Weekday as a decimal number (1-7, Monday is 1). Then
-replace day nubmers >6 with *weekend* and other days with *weekday*. Filled NA values
+replace day numbers >6 with *weekend* and other days with *weekday*. Filled NA values
 are used.
 
-```{r days_mod echo=TRUE}
+```{r days_mod}
 
 activityFilled_days <- activity.filled  %>%
   mutate(day = strftime(date,'%u')) %>%
@@ -216,7 +223,7 @@ Plot data using ggplot2 with horizontal facets. Because tick are basically the t
 2355 = 23:55) manual X-axis scale is used with a major tick of 200 (2 hours). The 
 minor tick is automatically set to 1H.
 
-```{r days_chart echo=TRUE}
+```{r days_chart}
 
 days.plot <-
   ggplot(activityFilled_days, aes(interval, steps, fill=steps)) +
@@ -236,6 +243,6 @@ print(days.plot) # screen, Plots tab.
 There are there differences in activity patterns between weekdays and weekends.
 During the weekdays people are starting activity earlier and there is a top activity
 around 08:00.
-There is also an evening activity duting the weekends, probably evening walk.
+There is also an evening activity during the weekends, probably evening walk.
 
 [1]: https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
